@@ -2,7 +2,11 @@ package com.packt.project.domaine.repository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.springframework.stereotype.Repository;
 import com.packt.project.domaine.Product;
 import com.packt.project.domaine.repository.ProductRepository;
@@ -31,7 +35,8 @@ import com.packt.project.domaine.repository.ProductRepository;
 	Product tablet_Nexus = new Product("P1236","Nexus 7", new BigDecimal(300));
 	
 	tablet_Nexus.setDescription("Google Nexus 7 is the lightest 7 inch tablet With a quad-core Qualcomm SnapdragonTM S4 Pro processor");
-	tablet_Nexus.setCategory("Tablet");tablet_Nexus.setManufacturer("Google");
+	tablet_Nexus.setCategory("Tablet");
+	tablet_Nexus.setManufacturer("Google");
 	tablet_Nexus.setUnitsInStock(1000);
 	
 	listOfProducts.add(iphone);
@@ -65,6 +70,32 @@ import com.packt.project.domaine.repository.ProductRepository;
 		}
 		}
 		return productsByCategory;
+		}
+	
+	public Set<Product> getProductsByFilter(Map<String, List<String>>filterParams) {
+	Set<Product> productsByBrand = new HashSet<Product>();
+	Set<Product> productsByCategory = new HashSet<Product>();
+	Set<String> criterias = filterParams.keySet();
+	if(criterias.contains("brand")) {
+	for(String brandName: filterParams.get("brand")) {
+	for(Product product: listOfProducts) {
+	if(brandName.equalsIgnoreCase(product.getManufacturer())){
+	productsByBrand.add(product);
+	}
+	}
+	}
+	}
+	if(criterias.contains("category")) {
+	for(String category: filterParams.get("category")) {
+	productsByCategory.addAll(this.getProductsByCategory(category));
+	}
+	}
+	productsByCategory.retainAll(productsByBrand);
+	return productsByCategory;
+	}
+	
+	public void addProduct(Product product) {
+		listOfProducts.add(product);
 		}
 	}
 
