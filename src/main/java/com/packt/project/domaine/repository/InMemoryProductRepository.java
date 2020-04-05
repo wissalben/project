@@ -10,6 +10,7 @@ import java.util.Set;
 import org.springframework.stereotype.Repository;
 import com.packt.project.domaine.Product;
 import com.packt.project.domaine.repository.ProductRepository;
+import com.packt.project.exception.ProductNotFoundException;
 
 
 @Repository
@@ -46,20 +47,29 @@ import com.packt.project.domaine.repository.ProductRepository;
 	public List<Product> getAllProducts() {
 	return listOfProducts;
 	}
+	
+	
 	public Product getProductById(String productId) {
-		Product productById = null;
-		for(Product product : listOfProducts) {
-		if(product!=null && product.getProductId()!=null &&
-		product.getProductId().equals(productId)){
-		productById = product;
-		break;
+		
+		
+			Product productById = null;
+			
+			for(Product product : listOfProducts) {
+				if(product!=null && product.getProductId()!=null && product.getProductId().equals(productId)){
+					productById = product;
+					break;
+				}
+			}
+			
+			if(productById == null){
+				throw new ProductNotFoundException("No products found with the product id: "+ productId);
+			}
+			
+			return productById;
 		}
-		}
-		if(productById == null){
-		throw new IllegalArgumentException("No products found with the product id: "+ productId);
-		}
-		return productById;
-		}
+		
+	
+	
 	
 	public List<Product> getProductsByCategory(String category) {
 		
@@ -71,6 +81,8 @@ import com.packt.project.domaine.repository.ProductRepository;
 		}
 		return productsByCategory;
 		}
+	
+	
 	
 	public Set<Product> getProductsByFilter(Map<String, List<String>>filterParams) {
 	Set<Product> productsByBrand = new HashSet<Product>();

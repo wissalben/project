@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 		model.addAttribute("greeting", "Welcome to your first project!");
 		
 		model.addAttribute("tagline", "The one and only amazing project");
-		
 		return "welcome";
 		
+		}
+		@RequestMapping("/welcome/greeting")
+		public String greeting() {
+		return "welcome";
 		}
 	}
 	
